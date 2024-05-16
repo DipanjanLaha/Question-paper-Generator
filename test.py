@@ -63,24 +63,37 @@ def submit_login():
 def upload_image():
     ques = request.form["question"]
     mrk = request.form["marks"]
-    print(ques, mrk)
     query = db.udb.insert_one({"Question": f"{ques}", "Marks": int(mrk)})
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        flash('No image selected for uploading')
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        #print('upload_image filename: ' + filename)
-        flash('Image successfully uploaded and displayed below')
-        return render_template('addNewQues.html', filename=filename)
+    img_name = str(db.udb.find_one({"Question": f"{ques}", "Marks": int(mrk)})["_id"])
+    if request.form.getlist('match') and request.form.getlist('match')[0] == 'on':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No image selected for uploading')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(img_name+".png")
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            #print('upload_image filename: ' + filename)
+            flash('Question successfully uploaded')
+            flash('Image successfully uploaded and displayed below')
+            return render_template('addNewQues.html', filename=filename)
+        else:
+            flash('Allowed image types are - png, jpg, jpeg')
+            return redirect(request.url)
     else:
-        flash('Allowed image types are - png, jpg, jpeg')
-        return redirect(request.url)
+        flash('Question successfully uploaded')
+        return render_template('addNewQues.html')
+
+
+pics = []
+with os.scandir('./static/uploads') as it:
+    for entry in it:
+        pics.append(entry.name)
+
+images_NoExt = [os.path.splitext(f)[0] for f in os.listdir('./static/uploads') if os.path.isfile(os.path.join('./static/uploads', f)) and f.lower().endswith(('png', 'jpg', 'jpeg', 'gif'))]
 
 
 @app.route('/display/<filename>')
@@ -98,7 +111,7 @@ query10 = list(db.udb.find({'Marks': 10}))
 
 @app.route('/make')
 def make_html():
-    return render_template("make.html", entries=query2, entries2=query4, entries3=query10)
+    return render_template("make.html", entries=query2, entries2=query4, entries3=query10, images=pics, images2=images_NoExt)
 
 
 @app.route('/addNew')
