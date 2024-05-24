@@ -26,7 +26,7 @@
               <h3 style="margin-left: 2%;margin-top: 2%">These are the available 2 marks questions:</h3>
               <div style="height:200px;margin-left: 2%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
               {% for entry in entries %}
-               <p>{{ entry["Question"] }}</p>
+               <p>{{ loop.index }} - {{ entry["Question"] }}</p>
                 <div class="gallery">
                 {% for image in images2 %}
                   {% if image == entry['_id']|string %}
@@ -39,13 +39,27 @@
               <h3 style="margin-left: 2%;margin-top: 2%">These are the available 4 marks questions:</h3>
               <div style="height:200px;margin-left: 2%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
               {% for entry in entries2 %}
-               <p>{{ entry["Question"] }}</p>
+               <p>{{ loop.index }} - {{ entry["Question"] }}</p>
+                <div class="gallery">
+                {% for image in images2 %}
+                  {% if image == entry['_id']|string %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ entry['_id'] ~ '.png') }}" alt="{{ image }}">
+                  {% endif %}
+                {% endfor %}
+                </div>
               {% endfor %}
                </div>
               <h3 style="margin-left: 2%;margin-top: 2%">These are the available 10 marks questions:</h3>
               <div style="height:200px;margin-left: 2%;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
               {% for entry in entries3 %}
-               <p>{{ entry["Question"] }}</p>
+               <p>{{ loop.index }} - {{ entry["Question"] }}</p>
+                <div class="gallery">
+                {% for image in images2 %}
+                  {% if image == entry['_id']|string %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ entry['_id'] ~ '.png') }}" alt="{{ image }}">
+                  {% endif %}
+                {% endfor %}
+                </div>
               {% endfor %}
               </div>
             </div>
@@ -92,7 +106,6 @@
                           <button class="btn btn-dark btn-lg" type="submit">Generate Now!!!</button>
                         </div>
                       </div>
-                      <p><a href="/Generate_pdf" download>Download (PDF)</a></p>
                     </div>
 
                   </form>

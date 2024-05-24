@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, send_file, flash, redirect, url_for
+from fpdf import Align
 from pymongo import MongoClient
 import os
 import fpdf
@@ -111,7 +112,7 @@ query10 = list(db.udb.find({'Marks': 10}))
 
 @app.route('/make')
 def make_html():
-    return render_template("make.html", entries=query2, entries2=query4, entries3=query10, images=pics, images2=images_NoExt)
+    return render_template('make.html', entries=query2, entries2=query4, entries3=query10, images=pics, images2=images_NoExt)
 
 
 @app.route('/addNew')
@@ -135,45 +136,96 @@ def pdf_gen():
 
 def generate_pdf_file(list1, list2, list3, marks2, marks10, marks4):
     pdf.add_page()
+    pdf.set_font("Times", "B", size=14)
+
+    with pdf.table() as table:
+        row = table.row()
+        row.cell(img='static/adamas.png')
+        row.cell("ADAMAS UNIVERSITY END-SEMESTER EXAMINATION : JUNE 2024 ", colspan=3, align="C")
+
+        pdf.set_font("Times", "B", size=12)
+
+        row = table.row()
+        row.cell("Name of the Program:", align="C")
+        row.cell("B. Tech CSE, CSE(AI&ML), CSE(CSF)", align="C")
+        row.cell("Semester:", align="C")
+        row.cell("VI", align="C")
+
+        row = table.row()
+        row.cell("Paper Title :", align="C")
+        row.cell("Unstructured Database", align="C")
+        row.cell("Paper Code:", align="C")
+        row.cell("CSE12002", align="C")
+
+        row = table.row()
+        row.cell("Maximum Marks:", align="C")
+        row.cell("50", align="C")
+        row.cell("Time Duration:", align="C")
+        row.cell("3HR", align="C")
+
+        row = table.row()
+        row.cell("Total No of questions:", align="C")
+        row.cell("12", align="C")
+        row.cell("Total No of Pages:", align="C")
+        row.cell("2", align="C")
+
+        row = table.row()
+        pdf.set_font("Times", "I", size=10)
+        row.cell("(Any other information for the student may be mentioned here)", align="L")
+        pdf.set_font("Times", "", size=10)
+        row.cell(
+            "1. At top sheet, clearly mention Name, Univ. Roll No., Enrolment No., Paper Name & Code, Date of Exam.\n "
+            "2. All parts of a Question should be answered consecutively. Each Answer should start from a fresh "
+            "page.\n 3. Assumptions made if any, should be stated clearly at the beginning of your answer.",
+            colspan=3, align="L")
+
     pdf.set_font("Times", size=20)
 
-    pdf.cell(200, 15, "Unstructured Database Exam 2024", ln=1, align="C")
+    pdf.cell(200, 15, "Answer all the Groups", ln=1, align="C")
     pdf.set_font("Times", 'i', size=17)
     pdf.cell(200, 15, "Generated using an automated paper generation system", ln=1, align="C")
     pdf.set_font("Times", 'i', size=14)
     pdf.cell(200, 10, "A project created by Dipanjan Laha", ln=1, align="C")
     pdf.set_font("Times", size=13)
-    pdf.cell(167, 15, "Max Marks : 50", align="l")
-    pdf.cell(100, 15, "Time : 3 Hours", ln=1, align="r")
+    pdf.cell(200, 15, "Answer all the Groups", align="c", ln=1,)
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(134, 15, "Section A", align="l")
-    pdf.set_font("Times", 'i', size=13)
-    pdf.cell(100, 15, "Max marks for this section are 2", ln=1, align="l")
+    pdf.cell(200, 15, "Group A", align="c", ln=1)
+    pdf.set_font("Times", size=13)
+    pdf.cell(184, 15, "Answer all the following Questions", align="c")
+    pdf.cell(50, 15, "2x5 = 10", ln=1, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(5):
         pdf.cell(170, 6, "Q"+str(i+1)+": "+list1[marks2[i]-1]["Question"], ln=1, align="l")
+        if str(list1[marks2[i]-1]["_id"]) in images_NoExt:
+            pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list1[marks2[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(134, 15, "Section B", align="l")
-    pdf.set_font("Times", 'i', size=13)
-    pdf.cell(100, 15, "Max marks for this section are 4", ln=1, align="l")
+    pdf.cell(184, 15, "Group B", align="c", ln=1)
+    pdf.set_font("Times", size=13)
+    pdf.cell(184, 15, "Answer all the following Questions", align="c")
+    pdf.cell(50, 15, "4x5 = 20", ln=1, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(5):
         pdf.cell(170, 6, "Q"+str(i+1)+": "+list2[marks4[i]-1]["Question"], ln=1, align="l")
+        if str(list2[marks4[i]-1]["_id"]) in images_NoExt:
+            pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list2[marks4[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(133, 15, "Section C", align="l")
-    pdf.set_font("Times", 'i', size=13)
-    pdf.cell(100, 15, "Max marks for this section are 10", ln=1, align="l")
+    pdf.cell(184, 15, "Group C", align="c", ln=1)
+    pdf.set_font("Times", size=13)
+    pdf.cell(184, 15, "Answer all the following Questions", align="c")
+    pdf.cell(50, 15, "10x2 = 20", ln=1, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(2):
         pdf.cell(170, 6, "Q"+str(i+1)+": "+list3[marks10[i]-1]["Question"], ln=1, align="l")
+        if str(list3[marks10[i]-1]["_id"]) in images_NoExt:
+            pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list3[marks10[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
     pdf.output("file.pdf")
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
