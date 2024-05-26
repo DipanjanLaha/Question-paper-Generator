@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, send_file, flash, redirect, url_for
-from fpdf import Align
+from fpdf import Align, XPos, YPos
 from pymongo import MongoClient
 import os
 import fpdf
@@ -181,46 +181,46 @@ def generate_pdf_file(list1, list2, list3, marks2, marks10, marks4):
 
     pdf.set_font("Times", size=20)
 
-    pdf.cell(200, 15, "Answer all the Groups", ln=1, align="C")
+    pdf.cell(200, 15, "Answer all the Groups", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
     pdf.set_font("Times", 'i', size=17)
-    pdf.cell(200, 15, "Generated using an automated paper generation system", ln=1, align="C")
+    pdf.cell(200, 15, "Generated using an automated paper generation system", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
     pdf.set_font("Times", 'i', size=14)
-    pdf.cell(200, 10, "A project created by Dipanjan Laha", ln=1, align="C")
+    pdf.cell(200, 10, "A project created by Dipanjan Laha", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
     pdf.set_font("Times", size=13)
-    pdf.cell(200, 15, "Answer all the Groups", align="c", ln=1,)
+    pdf.cell(200, 15, "Answer all the Groups", align="c", new_x=XPos.LMARGIN, new_y=YPos.NEXT,)
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(200, 15, "Group A", align="c", ln=1)
+    pdf.cell(200, 15, "Group A", align="c", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_font("Times", size=13)
     pdf.cell(184, 15, "Answer all the following Questions", align="c")
-    pdf.cell(50, 15, "2x5 = 10", ln=1, align="l")
+    pdf.cell(50, 15, "2x5 = 10", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(5):
-        pdf.cell(170, 6, "Q"+str(i+1)+": "+list1[marks2[i]-1]["Question"], ln=1, align="l")
+        pdf.cell(170, 6, "Q"+str(i+1)+": "+list1[marks2[i]-1]["Question"], new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
         if str(list1[marks2[i]-1]["_id"]) in images_NoExt:
             pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list1[marks2[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(184, 15, "Group B", align="c", ln=1)
+    pdf.cell(184, 15, "Group B", align="c", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_font("Times", size=13)
     pdf.cell(184, 15, "Answer all the following Questions", align="c")
-    pdf.cell(50, 15, "4x5 = 20", ln=1, align="l")
+    pdf.cell(50, 15, "4x5 = 20", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(5):
-        pdf.cell(170, 6, "Q"+str(i+1)+": "+list2[marks4[i]-1]["Question"], ln=1, align="l")
+        pdf.cell(170, 6, "Q"+str(i+1)+": "+list2[marks4[i]-1]["Question"], new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
         if str(list2[marks4[i]-1]["_id"]) in images_NoExt:
             pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list2[marks4[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
     pdf.set_font("Arial", 'b', size=16)
-    pdf.cell(184, 15, "Group C", align="c", ln=1)
+    pdf.cell(184, 15, "Group C", align="c", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_font("Times", size=13)
     pdf.cell(184, 15, "Answer all the following Questions", align="c")
-    pdf.cell(50, 15, "10x2 = 20", ln=1, align="l")
+    pdf.cell(50, 15, "10x2 = 20", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
 
     pdf.set_font("Times", size=12)
     for i in range(2):
-        pdf.cell(170, 6, "Q"+str(i+1)+": "+list3[marks10[i]-1]["Question"], ln=1, align="l")
+        pdf.cell(170, 6, "Q"+str(i+1)+": "+list3[marks10[i]-1]["Question"], new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="l")
         if str(list3[marks10[i]-1]["_id"]) in images_NoExt:
             pdf.image((os.path.join(app.config['UPLOAD_FOLDER'], str(list3[marks10[i]-1]["_id"])))+".png", Align.C, w=50, h=20)
 
