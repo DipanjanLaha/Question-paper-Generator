@@ -122,16 +122,21 @@ def add_new_qes():
 
 @app.route('/Generate_pdf', methods=['GET', 'POST'])
 def pdf_gen():
-    if request.method == 'POST':
-        # Retrieve user input from the form
-        marks2 = [int(i) for i in (request.form.get('2marks')).split()]
-        marks4 = [int(i) for i in (request.form.get('4marks')).split()]
-        marks10 = [int(i) for i in (request.form.get('10marks')).split()]
-        print(marks2, marks4, marks10)
-        if marks2 and marks4 and marks10:
-            generate_pdf_file(query2, query4, query10, marks2, marks10, marks4)
-            pdf_file = "./file.pdf"
-    return send_file(pdf_file, as_attachment=True, download_name='question.pdf')
+    global pdf_file
+    try:
+        if request.method == 'POST':
+            # Retrieve user input from the form
+            marks2 = [int(i) for i in (request.form.get('2marks')).split()]
+            marks4 = [int(i) for i in (request.form.get('4marks')).split()]
+            marks10 = [int(i) for i in (request.form.get('10marks')).split()]
+            print(marks2, marks4, marks10)
+            if marks2 and marks4 and marks10:
+                generate_pdf_file(query2, query4, query10, marks2, marks10, marks4)
+                pdf_file = "./file.pdf"
+        return send_file(pdf_file, as_attachment=True, download_name='question.pdf')
+    except Exception as e:
+        pdf_file = "./file.pdf"
+        return send_file(pdf_file, as_attachment=True, download_name='question.pdf')
 
 
 def generate_pdf_file(list1, list2, list3, marks2, marks10, marks4):
